@@ -3,40 +3,30 @@ package Main.src.java;
 import java.util.List;
 import java.util.function.ToIntFunction;
 
-public class BloomFilterImpl<T> implements IBloomFilter{
+public class BloomFilterImpl implements IBloomFilter{
 
-    private final long[] array;
-    private final int size;
-    private final List<ToIntFunction<T>> hashFunctions;
+    public long bitmap=0L;
 
-    public BloomFilterImpl(long[] array, int logicalSize, List<ToIntFunction<T>> hashFunctions) {
-        this.array = array;
-        this.size = logicalSize;
-        this.hashFunctions = hashFunctions;
+
+    public BloomFilterImpl(long bitmap) {
+      this.bitmap=bitmap;
     }
 
     private int mapHash(int hash) {
-        return hash & (size - 1);
+        return hash & (hash - 1);
     }
 
     @Override
-    public void add(Object value) {
-        for(ToIntFunction<T> function : hashFunctions)
-        {
-            int hash = mapHash(function.applyAsInt((T)value));
-            array[hash >>> 6] |= 1L << hash;
-        }
+    public void add(int value) {
+        bitmap = bitmap|value ;
     }
 
     @Override
-    public boolean mightContain(Object value) {
-        for(ToIntFunction<T> function : hashFunctions)
-        {
-            int hash=mapHash(function.applyAsInt((T)value));
-            if ((array[hash >>> 6] & (1L << hash)) == 0) {
-                return false;
-            }
-        }
+    public boolean mightContain(int value) {
+
+        if((bitmap&value) == bitmap)
         return true;
+
+        return false;
     }
 }

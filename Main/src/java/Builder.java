@@ -4,25 +4,26 @@ import java.util.List;
 import java.util.function.ToIntFunction;
 
 //hashBuilder
-public class Builder<T> {
-    private Integer size;
-    private List<ToIntFunction<T>> hashFunction;
+public class Builder {
+    private long intial;
+    List<ToIntFunction> hashFunction;
 
-    public Builder<T> withSize(Integer size)
+    public Builder withInitial(long intial)
     {
-        assert Integer.bitCount(size)==1;
-        this.size=size;
+        assert Long.bitCount(intial)==1;
+        this.intial=intial;
         return this;
     }
-    public Builder<T> withHashFunctions(List<ToIntFunction<T>> hash)
+    public Builder withHashFunctions(List<ToIntFunction> hash)
     {
         this.hashFunction = hash;
         return this;
 
     }
 
-    public BloomFilterImpl<T> build() {
-        return new BloomFilterImpl<T>(new long[size >>> 6], size, hashFunction);
+    public BloomFilterImpl build() {
+
+        return new BloomFilterImpl(intial);
     }
 
 
